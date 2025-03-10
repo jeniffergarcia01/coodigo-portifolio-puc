@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfólio - Sistema Utilitário</title>
+    <style>
+        /* Estilo Geral */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #4a3f35;
+            text-align: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        header {
+            background-color: #8f5e44;
+            color: white;
+            padding: 25px;
+            font-size: 30px;
+            border-bottom: 5px solid #c8a37d;
+            font-family: 'Roboto', sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: #fff8f0;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2, h3 {
+            color: #8f5e44;
+            font-family: 'Roboto', sans-serif;
+        }
+        p {
+            font-size: 16px;
+            color: #6a4e23;
+            font-weight: 300;
+        }
+
+        /* Personalização e Configurações */
+        .theme-toggle {
+            margin-top: 20px;
+            cursor: pointer;
+            padding: 10px;
+            background-color: #8f5e44;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .theme-toggle:hover {
+            background-color: #c8a37d;
+        }
+
+        /* Estilo das Tarefas */
+        .task-list input, .task-list button, .note-input input, .note-input textarea, .reminder-input input, .feedback-input textarea {
+            padding: 12px;
+            margin: 10px 0;
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #d6c5a7;
+            font-family: 'Arial', sans-serif;
+            font-size: 16px;
+        }
+        button {
+            background-color: #8f5e44;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #c8a37d;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background: #fff3e3;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 18px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .completed {
+            text-decoration: line-through;
+            color: #b8b8b8;
+        }
+        .feedback-section {
+            margin-top: 20px;
+            background: #faf3e0;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Tema Escuro */
+        body.dark-mode {
+            background-color: #2e2e2e;
+            color: #f5f5f5;
+        }
+        body.dark-mode header {
+            background-color: #444;
+        }
+        body.dark-mode .container {
+            background-color: #3a3a3a;
+        }
+        body.dark-mode button {
+            background-color: #444;
+        }
+        body.dark-mode button:hover {
+            background-color: #666;
+        }
+        body.dark-mode .task-list input, 
+        body.dark-mode .task-list button {
+            border-color: #666;
+        }
+        body.dark-mode li {
+            background: #333;
+            color: #f5f5f5;
+        }
+        body.dark-mode .completed {
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <header>Portfólio - Sistema Utilitário</header>
+    <div class="container">
+        <h2>Sobre o Projeto</h2>
+        <p>Este sistema foi desenvolvido para auxiliar na organização e produtividade pessoal e profissional.</p>
+        
+        <h3>Lista de Tarefas</h3>
+        <div class="task-list">
+            <input type="text" id="taskInput" placeholder="Adicionar nova tarefa">
+            <input type="time" id="taskTime">
+            <button onclick="addTask()">Adicionar</button>
+            <ul id="taskList"></ul>
+        </div>
+
+        <h3>Resumo do Dia</h3>
+        <div class="feedback-section">
+            <h3>Atividades Concluídas e Pendentes</h3>
+            <ul id="summaryList"></ul>
+            <h3>Deixe seu Feedback</h3>
+            <textarea id="feedbackInput" placeholder="O que achou do seu dia e do sistema?"></textarea>
+            <button onclick="submitFeedback()">Enviar Feedback</button>
+        </div>
+        
+        <!-- Botão de alternância de tema -->
+        <button class="theme-toggle" onclick="toggleTheme()">Alternar Tema</button>
+    </div>
+
+    <script>
+        // Função para alternar entre os temas
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        function addTask() {
+            let taskInput = document.getElementById("taskInput");
+            let taskTime = document.getElementById("taskTime");
+            let taskList = document.getElementById("taskList");
+
+            if (taskInput.value.trim() !== "" && taskTime.value !== "") {
+                let li = document.createElement("li");
+                li.innerHTML = `<input type='checkbox' onchange='toggleTask(this)'> ${taskTime.value} - ${taskInput.value}`;
+                taskList.appendChild(li);
+                taskInput.value = "";
+                taskTime.value = "";
+            }
+        }
+
+        function toggleTask(checkbox) {
+            let li = checkbox.parentElement;
+            if (checkbox.checked) {
+                li.classList.add("completed");
+            } else {
+                li.classList.remove("completed");
+            }
+            updateSummary();
+        }
+
+        function updateSummary() {
+            let tasks = document.querySelectorAll("#taskList li");
+            let summaryList = document.getElementById("summaryList");
+            summaryList.innerHTML = "";
+            tasks.forEach(task => {
+                let li = document.createElement("li");
+                li.textContent = task.textContent;
+                summaryList.appendChild(li);
+            });
+        }
+
+        function submitFeedback() {
+            let feedback = document.getElementById("feedbackInput").value;
+            if (feedback.trim() !== "") {
+                alert("Obrigado pelo seu feedback!");
+                document.getElementById("feedbackInput").value = "";
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+
+
